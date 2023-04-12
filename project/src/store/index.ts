@@ -1,11 +1,12 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import { apiSlice } from '../api/api';
+import { redirect } from './middlewares/redirect/redirect';
 
-
+export const rootReducer = combineReducers({
+  [apiSlice.reducerPath]: apiSlice.reducer
+});
 
 export const store = configureStore({
-  reducer: {
-    [apiSlice.reducerPath]: apiSlice.reducer
-  },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware)
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(apiSlice.middleware, redirect)
 });

@@ -1,9 +1,12 @@
-import { useCheckAuthQuery, useGetCommentsQuery } from '../../api/api';
+import { Route, Routes } from 'react-router-dom';
+import { AppRoute } from '../../consts/enum';
+import MainScreen from '../../pages/main/main-screen';
+import SignInScreen from '../../pages/sign-in/sign-in-screen';
 
-function App(): JSX.Element {
-  const query = useCheckAuthQuery();
-  console.log(query);
-  return <p>Hello, world!</p>;
-}
+const App = (): JSX.Element => (
+  <Routes>
+    <Route path={AppRoute.Root} element={<MainScreen/>}/>
+    <Route path={AppRoute.Login} element={<SignInScreen/>}/>
+  </Routes>);
 
 export default App;

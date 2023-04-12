@@ -1,13 +1,11 @@
 import { AUTH_TOKEN_KEY_NAME } from '../consts/app';
 
-const getToken = () => localStorage.getItem(AUTH_TOKEN_KEY_NAME) ?? '';
+export const getToken = () => localStorage.getItem(AUTH_TOKEN_KEY_NAME) ?? '';
 
-const setToken = (token: string) => {
+export const setToken = (token: string) => {
   localStorage.setItem(AUTH_TOKEN_KEY_NAME, token);
 };
 
-const removeToken = () => {
+export const removeToken = () => {
   localStorage.removeItem(AUTH_TOKEN_KEY_NAME);
 };
-
-export { getToken, setToken, removeToken };

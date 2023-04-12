@@ -1,7 +1,7 @@
 # Директория с вёрсткой (markup)
 
 * `index.html` - контейнер;
-* `main.html` - страница «Main» (Главная страница);
+* `main.html` - страница «MainScreen» (Главная страница);
 * `my-list.html` — страница «MyList» (Список фильмов «К просмотру»);
 * `sign-in.html` - страница «Sign In» (Авторизация):
    * `sign-in-message.html` - с выводом сообщения;
