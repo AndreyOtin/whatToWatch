@@ -1,22 +1,26 @@
 import { FaSpinner } from 'react-icons/fa';
 import cl from './spinner.module.css';
 import classNames from 'clsx';
+import { CSSProperties } from 'react';
 
 type SpinnerProps = {
   isActive: boolean;
   children?: JSX.Element;
-  variant?: 'small' | 'primary';
+  variant?: 'small' | 'primary' | 'secondary';
+  style?: CSSProperties;
 }
 
-const Spinner = ({ children, variant = 'primary', isActive = false }: SpinnerProps) => (
+const Spinner = ({ children, style, variant = 'primary', isActive = false }: SpinnerProps) => (
   isActive
     ?
     <div style={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
-      height: variant === 'small' ? '100%' : '100vh',
-      backgroundImage: 'linear-gradient(-180deg,#180202 0%,#000 100%)'
+      height: variant === 'primary' ? '100vh' : '100%',
+      width: '100%',
+      backgroundImage: 'linear-gradient(-180deg,#180202 0%,#000 100%)',
+      ...style
     }}
     >
       <FaSpinner role="presentation" className={classNames(cl.spinner, cl[variant])}/>

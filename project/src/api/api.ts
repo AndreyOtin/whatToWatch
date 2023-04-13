@@ -19,7 +19,7 @@ enum APIRoute {
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  tagTypes: ['Films', 'Comments', 'User'],
+  tagTypes: ['Films', 'Comments', 'User', 'Favorite'],
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     prepareHeaders: (headers) => {
@@ -46,20 +46,16 @@ export const apiSlice = createApi({
     }
   }),
   endpoints: (builder) => ({
-    // getFilms: builder.query<Film[], void>({
-    //   query: () => APIRoute.Films
-    // }),
-    getFilm: builder.query<Film, number>({
-      query: (id) => `${APIRoute.Films}/${id}`
+    getFilm: builder.query<Film, string>({
+      query: (id) => `${APIRoute.Films}/${id}`,
+      providesTags: (result, error, arg) => error ? [] : [{ type: 'Films', id: arg }]
     }),
-    getSimilar: builder.query<Film[], number>({
+    getSimilar: builder.query<Film[], string>({
       query: (id) => `${APIRoute.Films}/${id}/similar`
     }),
-    // getPromo: builder.query<Film, void>({
-    //   query: () => APIRoute.Promo
-    // }),
     getFavorites: builder.query<Film[], void>({
-      query: () => APIRoute.Promo
+      query: () => APIRoute.Favorites,
+      providesTags: ['Favorite']
     }),
     initMainScreen: builder.query<{ promoFilm: Film; films: Film[] }, void>({
       queryFn: async (arg, api, extraOptions, baseQuery) => {
@@ -71,13 +67,20 @@ export const apiSlice = createApi({
         return result[0].data && result[1].data
           ? { data: { films: result[1].data as Film[], promoFilm: result[0].data as Film } }
           : { error: result[0].error as FetchBaseQueryError };
+      },
+      providesTags: (result, error) => {
+        if (error || !result?.films || !result?.promoFilm) {
+          return [];
+        }
+        const res = result.films.map(({ id }) => ({ id, type: 'Films' as const }));
+        return [{ type: 'Films', id: result.promoFilm.id }, ...res];
       }
     }),
     checkAuth: builder.query<AuthUser, void>({
       query: () => APIRoute.Login,
       providesTags: ['User']
     }),
-    getComments: builder.query<Comment, number>({
+    getComments: builder.query<Comment[], number>({
       query: (id) => `${APIRoute.Comments}/${id}`
     }),
     changeFavorite: builder.mutation<Film, { id: number; isFavorite: boolean }>({
@@ -85,7 +88,7 @@ export const apiSlice = createApi({
         method: 'POST',
         url: `${APIRoute.Favorites}/${id}/${Number(isFavorite)}`
       }),
-      invalidatesTags: ['Films']
+      invalidatesTags: (result, error, arg) => error ? [] : ['Favorite', 'Films']
     }),
     authenticateUser: builder.mutation<AuthUser, NewUser>({
       queryFn: async (arg, api, extraOptions, baseQuery) => {
@@ -120,14 +123,14 @@ export const apiSlice = createApi({
         url: APIRoute.Logout,
         method: 'DELETE'
       }),
-      invalidatesTags: ['Comments']
+      invalidatesTags: (result, error) => error ? [] : ['User']
+
     })
   })
 });
 
 export const {
   useInitMainScreenQuery,
-  // useGetFilmsQuery,
   useGetCommentsQuery,
   useAddCommentMutation,
   useAuthenticateUserMutation,
@@ -135,7 +138,6 @@ export const {
   useCheckAuthQuery,
   useGetFavoritesQuery,
   useGetFilmQuery,
-  // useGetPromoQuery,
   useGetSimilarQuery,
   useLogUserOutMutation
 } = apiSlice;

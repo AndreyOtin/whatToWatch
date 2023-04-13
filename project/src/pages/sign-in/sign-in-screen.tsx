@@ -6,14 +6,17 @@ import { Navigate } from 'react-router-dom';
 import { AppRoute } from '../../consts/enum';
 import { useSelector } from 'react-redux';
 import { getCheckAuthQuery } from '../../store/selectors';
+import Spinner from '../../components/spinner/spinner';
 
-type SignInScreenProps = {}
-
-const SignInScreen = ({}: SignInScreenProps) => {
+const SignInScreen = () => {
   const query = useSelector(getCheckAuthQuery);
 
   if (query.isSuccess) {
     return <Navigate to={AppRoute.Root}/>;
+  }
+
+  if (query.isLoading) {
+    return <Spinner isActive/>;
   }
 
   return (

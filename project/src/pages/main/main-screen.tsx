@@ -1,18 +1,16 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import FilmsList from '../../components/films-list/films-list';
 import FilmCardContainer from '../../components/film-card-container/film-card-container';
-import { useCheckAuthQuery, useInitMainScreenQuery } from '../../api/api';
+import { useInitMainScreenQuery } from '../../api/api';
 import Spinner from '../../components/spinner/spinner';
-import { getCheckAuthQuery } from '../../store/selectors';
-import { useSelector } from 'react-redux';
 import GenreList from '../../components/genre-list/genre-list';
 import { DEFAULT_GENRE } from '../../consts/app';
 import { MaxElementCount } from '../../consts/enum';
 import Footer from '../../components/footer/footer';
+import Header from '../../components/header/header';
 
 const MainScreen = () => {
   const query = useInitMainScreenQuery();
-  const auth = useSelector(getCheckAuthQuery);
   const [activeGenre, setActiveGenre] = useState<string>(DEFAULT_GENRE);
   const [cardCount, setCardCount] = useState(Math.min(MaxElementCount.FilmCard));
 
@@ -20,7 +18,7 @@ const MainScreen = () => {
     return <h1>Error</h1>;
   }
 
-  if (query.isLoading || auth.isLoading || !query.data) {
+  if (query.isLoading || !query.data) {
     return <Spinner isActive/>;
   }
 
@@ -32,8 +30,13 @@ const MainScreen = () => {
 
   return (
     <>
-      <FilmCardContainer authStatus={auth.isError} promoFilm={query.data.promoFilm}/>
-      <div style={{ minHeight: '61.5vh' }} className="page-content">
+      <FilmCardContainer film={query.data.promoFilm}>
+        <Header className="film-card__head"/>
+      </FilmCardContainer>
+      <div
+        style={{ minHeight: '61.5vh' }}
+        className="page-content"
+      >
         <section
           style={{
             display: 'flex',
@@ -42,11 +45,8 @@ const MainScreen = () => {
           className="catalog"
         >
           <h2 className="catalog__title visually-hidden">Catalog</h2>
-
           <GenreList films={query.data.films} onGenreClick={setActiveGenre} activeGenre={activeGenre}/>
-
           <FilmsList films={filteredFilm.slice(0, Math.min(cardCount, filteredFilm.length))}/>
-
           {isShowMoreVisible &&
             <div className="catalog__more">
               <button

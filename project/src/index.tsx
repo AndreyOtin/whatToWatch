@@ -7,6 +7,9 @@ import HistoryRouter from './components/history-router/history-router';
 import { browserHistory } from './utils/browser-history';
 import { HelmetProvider } from 'react-helmet-async';
 import { apiSlice } from './api/api';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { MaxElementCount } from './consts/enum';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -16,6 +19,13 @@ store.dispatch(apiSlice.endpoints.checkAuth.initiate());
 
 root.render(
   <React.StrictMode>
+    <ToastContainer
+      limit={MaxElementCount.ToastError}
+      position="top-center"
+      closeOnClick
+      pauseOnHover
+      theme="light"
+    />
     <HistoryRouter history={browserHistory}>
       <Provider store={store}>
         <HelmetProvider>

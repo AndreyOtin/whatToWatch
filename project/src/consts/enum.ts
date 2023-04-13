@@ -1,13 +1,12 @@
-import exp from 'constants';
-
 export enum AppRoute {
   Root = '/',
   Favorites = '/favorites',
   Login = '/login',
   Offer = '/offer/:id',
-  City = '/city/:city',
+  Film = '/film/:film',
 }
 
 export enum MaxElementCount {
-  FilmCard = 8
+  FilmCard = 8,
+  ToastError = 1,
 }

@@ -2,18 +2,30 @@ import React from 'react';
 import { Link, useMatch } from 'react-router-dom';
 import { AppRoute } from '../../consts/enum';
 import clsx from 'clsx';
-import { useSelector } from "react-redux";
-import { getCheckAuthQuery } from "../../store/selectors";
+import { useSelector } from 'react-redux';
+import { getCheckAuthQuery } from '../../store/selectors';
+import { useLogUserOutMutation } from '../../api/api';
+import { displayToast } from '../../utils/app';
+import { removeToken } from '../../api/token';
 
 type HeaderProps = {
   children?: JSX.Element;
   className: string;
-  isUserAuthed?: boolean;
 }
 
-const Header = ({ children, className, isUserAuthed = false }: HeaderProps) => {
+const Header = ({ children, className }: HeaderProps) => {
   const isLoginRoute = !!useMatch(AppRoute.Login);
-  const query = useSelector(getCheckAuthQuery);
+  const authQuery = useSelector(getCheckAuthQuery);
+  const [logUserOut] = useLogUserOutMutation();
+
+  const handleLogoutClick = () => {
+    logUserOut()
+      .unwrap()
+      .then(() => removeToken())
+      .catch((err) => {
+        displayToast(err);
+      });
+  };
 
   return (
     <header className={clsx('page-header', className)}>
@@ -27,7 +39,7 @@ const Header = ({ children, className, isUserAuthed = false }: HeaderProps) => {
       {children}
       {isLoginRoute ||
         <ul className="user-block">
-          {isUserAuthed
+          {authQuery.isError
             ? (
               <div className="user-block">
                 <Link to={AppRoute.Login} className="user-block__link">Sign in</Link>
@@ -36,11 +48,18 @@ const Header = ({ children, className, isUserAuthed = false }: HeaderProps) => {
               <>
                 <li className="user-block__item">
                   <div className="user-block__avatar">
-                    <img src={query?.data?.avatarUrl} alt={query?.data?.name} width="63" height="63"/>
+                    <Link to={AppRoute.Favorites}>
+                      <img src={authQuery?.data?.avatarUrl} alt={authQuery?.data?.name} width="63" height="63"/>
+                    </Link>
                   </div>
                 </li>
                 <li className="user-block__item">
-                  <a className="user-block__link">Sign out</a>
+                  <a
+                    onClick={handleLogoutClick}
+                    className="user-block__link"
+                  >
+                    Sign out
+                  </a>
                 </li>
               </>
             )}

@@ -1,10 +1,11 @@
 import React, { FormEventHandler } from 'react';
 import { useAuthenticateUserMutation } from '../../../api/api';
+import { displayToast } from '../../../utils/app';
 
 type SignInFormProps = {}
 
 const SignInForm = ({}: SignInFormProps) => {
-  const [authenticateUser, { isLoading, isError }] = useAuthenticateUserMutation();
+  const [authenticateUser, { isLoading }] = useAuthenticateUserMutation();
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
     (async () => {
@@ -14,14 +15,12 @@ const SignInForm = ({}: SignInFormProps) => {
       const password = elements.namedItem('user-password') as HTMLInputElement;
 
       try {
-        const response = await authenticateUser({
+        await authenticateUser({
           password: password.value,
           email: email.value
         }).unwrap();
       } catch (err) {
-        console.log(err)
-        // const error = err as FetchBaseQueryError;
-        // const message = error.data as { error: string };
+        displayToast(err);
       }
     })();
   };
@@ -35,6 +34,7 @@ const SignInForm = ({}: SignInFormProps) => {
       <div className="sign-in__fields">
         <div className="sign-in__field">
           <input
+            disabled={isLoading}
             className="sign-in__input"
             type="email"
             placeholder="Email address"
@@ -45,6 +45,7 @@ const SignInForm = ({}: SignInFormProps) => {
         </div>
         <div className="sign-in__field">
           <input
+            disabled={isLoading}
             className="sign-in__input"
             type="password"
             placeholder="Password"
@@ -55,7 +56,13 @@ const SignInForm = ({}: SignInFormProps) => {
         </div>
       </div>
       <div className="sign-in__submit">
-        <button className="sign-in__btn" type="submit">Sign in</button>
+        <button
+          disabled={isLoading}
+          className="sign-in__btn"
+          type="submit"
+        >
+          Sign in
+        </button>
       </div>
     </form>
   );
