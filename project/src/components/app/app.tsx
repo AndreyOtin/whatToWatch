@@ -4,6 +4,7 @@ import MainScreen from '../../pages/main/main-screen';
 import SignInScreen from '../../pages/sign-in/sign-in-screen';
 import FilmScreen from '../../pages/film/film-screen';
 import MyListScreen from '../../pages/my-list/my-list-screen';
+import PlayerScreen from '../../pages/player/player-screen';
 
 const App = (): JSX.Element => (
   <Routes>
@@ -11,6 +12,7 @@ const App = (): JSX.Element => (
     <Route path={AppRoute.Login} element={<SignInScreen/>}/>
     <Route path={AppRoute.Film} element={<FilmScreen/>}/>
     <Route path={AppRoute.Favorites} element={<MyListScreen/>}/>
+    <Route path={AppRoute.Player} element={<PlayerScreen/>}/>
   </Routes>);
 
 export default App;

@@ -21,7 +21,11 @@ const Overview = ({ film }: OverviewProps) => (
         <span
           className="film-card__details-value"
         >
-          {film.starring.map((star) => <React.Fragment key={star}>{` ${star}, `} <br/></React.Fragment>)}
+          {film.starring.map((star, index, arr) => {
+            const comma = index === arr.length - 1 ? '' : ',';
+
+            return <React.Fragment key={star}>{` ${star}${comma} `} <br/></React.Fragment>;
+          })}
         </span>
       </p>
     </div>

@@ -3,6 +3,8 @@ import { Film } from '../../types/film';
 import { useSelector } from 'react-redux';
 import { getCheckAuthQuery } from '../../store/selectors';
 import MyListButton from '../my-list-button/my-list-button';
+import { generatePath, useNavigate } from 'react-router-dom';
+import { AppRoute } from '../../consts/enum';
 
 type FilmCardProps = {
   film: Film;
@@ -12,6 +14,7 @@ type FilmCardProps = {
 const FilmCard = ({ film, full = false }: FilmCardProps) => {
   const { posterImage, name, genre, released } = film;
   const authQuery = useSelector(getCheckAuthQuery);
+  const navigate = useNavigate();
 
   return (
     <div className="film-card__wrap">
@@ -33,7 +36,11 @@ const FilmCard = ({ film, full = false }: FilmCardProps) => {
           </p>
 
           <div className="film-card__buttons">
-            <button className="btn btn--play film-card__button" type="button">
+            <button
+              onClick={() => navigate(generatePath(AppRoute.Player, { id: film.id.toString() }))}
+              className="btn btn--play film-card__button"
+              type="button"
+            >
               <svg viewBox="0 0 19 19" width="19" height="19">
                 <use xlinkHref="#play-s"></use>
               </svg>
