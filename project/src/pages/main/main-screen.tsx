@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import FilmsList from '../../components/films-list/films-list';
 import FilmCardContainer from '../../components/film-card-container/film-card-container';
 import { useInitMainScreenQuery } from '../../api/api';
@@ -8,25 +8,32 @@ import { DEFAULT_GENRE } from '../../consts/app';
 import { MaxElementCount } from '../../consts/enum';
 import Footer from '../../components/footer/footer';
 import Header from '../../components/header/header';
+import NotFoundScreen from '../not-found-screen/not-found-screen';
 
 const MainScreen = () => {
   const query = useInitMainScreenQuery();
   const [activeGenre, setActiveGenre] = useState<string>(DEFAULT_GENRE);
-  const [cardCount, setCardCount] = useState(Math.min(MaxElementCount.FilmCard));
+  const [cardCount, setCardCount] = useState(MaxElementCount.FilmCard);
+
+  const filteredFilms = useMemo(() => {
+    if (!query.data) {
+      return [];
+    }
+
+    return activeGenre === DEFAULT_GENRE
+      ? query.data.films
+      : query.data.films.filter((film) => film.genre === activeGenre);
+  }, [activeGenre, query.data]);
 
   if (query.isError) {
-    return <h1>Error</h1>;
+    return <NotFoundScreen/>;
   }
 
   if (query.isLoading || !query.data) {
     return <Spinner isActive/>;
   }
 
-  const filteredFilm = activeGenre === DEFAULT_GENRE
-    ? query.data.films
-    : query.data.films.filter((film) => film.genre === activeGenre);
-
-  const isShowMoreVisible = cardCount < filteredFilm.length;
+  const isShowMoreVisible = cardCount < filteredFilms.length;
 
   return (
     <>
@@ -45,8 +52,10 @@ const MainScreen = () => {
           className="catalog"
         >
           <h2 className="catalog__title visually-hidden">Catalog</h2>
+
           <GenreList films={query.data.films} onGenreClick={setActiveGenre} activeGenre={activeGenre}/>
-          <FilmsList films={filteredFilm.slice(0, Math.min(cardCount, filteredFilm.length))}/>
+          <FilmsList films={filteredFilms?.slice(0, Math.min(cardCount, filteredFilms.length))}/>
+
           {isShowMoreVisible &&
             <div className="catalog__more">
               <button
@@ -57,6 +66,7 @@ const MainScreen = () => {
                 Show more
               </button>
             </div>}
+
         </section>
         <Footer/>
       </div>

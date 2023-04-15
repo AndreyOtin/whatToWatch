@@ -1,28 +1,34 @@
-import React, { FormEventHandler } from 'react';
+import React, { ChangeEvent, FormEventHandler } from 'react';
 import { useAuthenticateUserMutation } from '../../../api/api';
 import { displayToast } from '../../../utils/app';
 
-type SignInFormProps = {}
-
-const SignInForm = ({}: SignInFormProps) => {
+const SignInForm = () => {
   const [authenticateUser, { isLoading }] = useAuthenticateUserMutation();
 
   const onFormSubmit: FormEventHandler<HTMLFormElement> = (evt) => {
     (async () => {
       evt.preventDefault();
       const elements = evt.currentTarget.elements;
-      const email = elements.namedItem('user-email') as HTMLInputElement;
-      const password = elements.namedItem('user-password') as HTMLInputElement;
+      const emailElement = elements.namedItem('user-email') as HTMLInputElement;
+      const passwordElement = elements.namedItem('user-password') as HTMLInputElement;
 
       try {
         await authenticateUser({
-          password: password.value,
-          email: email.value
+          password: passwordElement.value,
+          email: emailElement.value
         }).unwrap();
       } catch (err) {
         displayToast(err);
       }
     })();
+  };
+
+  const handlePasswordChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    if (evt.target.validity.patternMismatch) {
+      evt.target.setCustomValidity('Пароль должен состоять минимум из одной буквы и цифры');
+    } else {
+      evt.target.setCustomValidity('');
+    }
   };
 
   return (
@@ -51,6 +57,9 @@ const SignInForm = ({}: SignInFormProps) => {
             placeholder="Password"
             name="user-password"
             id="user-password"
+            required
+            pattern="^(?=.*[a-zA-Zа-яА-Я])(?=.*\d)[^\s].+"
+            onChange={handlePasswordChange}
           />
           <label className="sign-in__label visually-hidden" htmlFor="user-password">Password</label>
         </div>

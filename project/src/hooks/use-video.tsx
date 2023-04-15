@@ -15,6 +15,7 @@ const useVideo = (ref: RefObject<HTMLVideoElement>, options: Options = defaultOp
 
   const duration = ref.current?.duration || 0;
   const isPaused = ref.current?.paused;
+  const isError = ref.current?.error;
 
   const play = () => ref.current?.play();
   const pause = () => ref.current?.pause();
@@ -33,21 +34,23 @@ const useVideo = (ref: RefObject<HTMLVideoElement>, options: Options = defaultOp
 
   const handleDragAndDrop = (evt: React.MouseEvent<HTMLDivElement>) => {
     const parentRect = evt.currentTarget.parentElement?.getBoundingClientRect();
+    const target = evt.target as HTMLDivElement;
+
     if (!parentRect || isLoading) {
       return;
     }
 
-    evt.currentTarget.ondragstart = function () {
+    document.ondragstart = function (event) {
+      event.preventDefault();
       return false;
     };
 
-    const shiftX = evt.pageX - evt.currentTarget.getBoundingClientRect().left;
+    document.ondragend = function (event) {
+      event.preventDefault();
+      return false;
+    };
 
     const onMouseMove = (e: MouseEvent) => {
-      const tar = evt.target as HTMLDivElement;
-
-      tar.style.left = `${e.pageX - shiftX}px`;
-
       let pos = (e.pageX - parentRect.left) / parentRect.width;
 
       if (pos < 0) {
@@ -57,8 +60,8 @@ const useVideo = (ref: RefObject<HTMLVideoElement>, options: Options = defaultOp
       }
 
       if (ref.current) {
+        target.style.left = `${(pos) * 100}%`;
         ref.current.currentTime = pos * ref.current.duration;
-        tar.style.left = `${pos * 100}%`;
       }
     };
 
@@ -75,7 +78,6 @@ const useVideo = (ref: RefObject<HTMLVideoElement>, options: Options = defaultOp
 
     if (options.isOnTimeUpdate) {
       ref.current.addEventListener('timeupdate', () => {
-
         const bf = ref.current?.buffered;
         const duration1 = ref.current?.duration;
 
@@ -83,10 +85,10 @@ const useVideo = (ref: RefObject<HTMLVideoElement>, options: Options = defaultOp
           return;
         }
 
-        const loadEndPercentage = bf.end(bf?.length - 1) / duration1;
+        const loadEndPercentage = bf.end(bf.length - 1) / duration1;
 
         setLoadedPercent(loadEndPercentage);
-        setCurrentTime(ref.current?.currentTime || 0);
+        setCurrentTime(ref.current.currentTime);
       });
     }
 
@@ -96,6 +98,7 @@ const useVideo = (ref: RefObject<HTMLVideoElement>, options: Options = defaultOp
   }, [options.isOnTimeUpdate, ref]);
 
   return {
+    isError,
     isLoading,
     currentTime,
     duration,

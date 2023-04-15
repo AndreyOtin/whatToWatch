@@ -12,9 +12,9 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
 
   return (
     <Spinner isActive={query.isLoading}>
-      {query.data
-        ? children
-        : <Navigate to={AppRoute.Login}/>}
+      {query.isError
+        ? <Navigate to={AppRoute.Login}/>
+        : children}
     </Spinner>
   );
 };

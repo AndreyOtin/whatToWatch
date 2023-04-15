@@ -2,17 +2,18 @@ import React from 'react';
 import Footer from '../../components/footer/footer';
 import SignInForm from '../../components/forms/sign-in-form/sign-in-form';
 import Header from '../../components/header/header';
-import { Navigate } from 'react-router-dom';
-import { AppRoute } from '../../consts/enum';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { getCheckAuthQuery } from '../../store/selectors';
+import { selectCheckAuthQuery } from '../../store/selectors';
 import Spinner from '../../components/spinner/spinner';
 
 const SignInScreen = () => {
-  const query = useSelector(getCheckAuthQuery);
+  const query = useSelector(selectCheckAuthQuery);
+  const navigate = useNavigate();
 
   if (query.isSuccess) {
-    return <Navigate to={AppRoute.Root}/>;
+    navigate(-1);
+    return null;
   }
 
   if (query.isLoading) {

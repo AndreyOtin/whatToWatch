@@ -18,20 +18,18 @@ const root = ReactDOM.createRoot(
 store.dispatch(apiSlice.endpoints.checkAuth.initiate());
 
 root.render(
-  <React.StrictMode>
-    <ToastContainer
-      limit={MaxElementCount.ToastError}
-      position="top-center"
-      closeOnClick
-      pauseOnHover
-      theme="light"
-    />
-    <HistoryRouter history={browserHistory}>
-      <Provider store={store}>
-        <HelmetProvider>
-          < App/>
-        </HelmetProvider>
-      </Provider>
-    </HistoryRouter>
-  </React.StrictMode>
+  <HistoryRouter basename='/whatToWatch' history={browserHistory}>
+    <Provider store={store}>
+      <HelmetProvider>
+        <ToastContainer
+          limit={MaxElementCount.ToastError}
+          position="top-center"
+          closeOnClick
+          pauseOnHover
+          theme="light"
+        />
+        < App/>
+      </HelmetProvider>
+    </Provider>
+  </HistoryRouter>
 );

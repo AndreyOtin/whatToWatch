@@ -12,6 +12,7 @@ const PlayerScreen = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
   const {
+    isError,
     isLoading,
     duration,
     currentTime,
@@ -55,8 +56,31 @@ const PlayerScreen = () => {
           top: '0',
           left: '0'
         }}
-        isActive={isLoading}
+        isActive={isLoading && !(isError || filmQuery.isError)}
       />
+
+      {(isError || filmQuery.isError) &&
+        <div style={{
+          color: '#d9cd8d',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          width: '100%',
+          height: '100%',
+          backgroundImage: 'linear-gradient(-180deg,#180202 0%,#000)',
+          position: 'absolute',
+          top: 0,
+          left: 0
+        }}
+        >
+          <h2>Error happened while loading</h2>
+          <button
+            style={{ cursor: 'pointer', color: '#d9cd8d', backgroundImage: 'linear-gradient(-180deg,#180202 0%,#000)' }}
+            onClick={() => navigate(0)}
+          >Try again
+          </button>
+        </div>}
 
       <button
         onClick={handleExitClick}

@@ -3,7 +3,7 @@ import { getToken, setToken } from './token';
 import { Film } from '../types/film';
 import { Comment, NewComment } from '../types/comment';
 import { AuthUser, NewUser } from '../types/user';
-import { redirectBack } from '../store/middlewares/redirect/actions';
+import { redirectBack } from '../store/middlewares/actions';
 
 const BASE_URL = 'https://12.react.pages.academy/wtw';
 const TIMEOUT = 5000;
@@ -81,14 +81,15 @@ export const apiSlice = createApi({
       providesTags: ['User']
     }),
     getComments: builder.query<Comment[], number>({
-      query: (id) => `${APIRoute.Comments}/${id}`
+      query: (id) => `${APIRoute.Comments}/${id}`,
+      providesTags: ['Comments']
     }),
     changeFavorite: builder.mutation<Film, { id: number; isFavorite: boolean }>({
       query: ({ id, isFavorite }) => ({
         method: 'POST',
         url: `${APIRoute.Favorites}/${id}/${Number(isFavorite)}`
       }),
-      invalidatesTags: (result, error, arg) => error ? [] : ['Favorite', 'Films']
+      invalidatesTags: (result, error) => error ? [] : ['Favorite', 'Films']
     }),
     authenticateUser: builder.mutation<AuthUser, NewUser>({
       queryFn: async (arg, api, extraOptions, baseQuery) => {
@@ -124,7 +125,6 @@ export const apiSlice = createApi({
         method: 'DELETE'
       }),
       invalidatesTags: (result, error) => error ? [] : ['User']
-
     })
   })
 });

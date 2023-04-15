@@ -5,13 +5,13 @@ import Header from '../../components/header/header';
 import { useGetFavoritesQuery } from '../../api/api';
 import Spinner from '../../components/spinner/spinner';
 import { useSelector } from 'react-redux';
-import { getCheckAuthQuery } from '../../store/selectors';
+import { selectCheckAuthQuery } from '../../store/selectors';
 import { Navigate } from 'react-router-dom';
 import { AppRoute } from '../../consts/enum';
 
 const MyListScreen = () => {
   const favoritesQuery = useGetFavoritesQuery();
-  const authQuery = useSelector(getCheckAuthQuery);
+  const authQuery = useSelector(selectCheckAuthQuery);
 
   if (authQuery.isError) {
     return <Navigate to={AppRoute.Login}/>;

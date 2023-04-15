@@ -4,15 +4,10 @@ import Details from './details/details';
 import clsx from 'clsx';
 import Overview from './overview/overview';
 import Reviews from './reviews/reviews';
+import { AppRoute, NavItem } from '../../consts/enum';
 
 type FilmDescriptionProps = {
   film: Film;
-}
-
-enum NavItem {
-  Details = 'Details',
-  Overview = 'Overview',
-  Reviews = 'Reviews'
 }
 
 const FilmDescription = ({ film }: FilmDescriptionProps) => {
@@ -33,7 +28,7 @@ const FilmDescription = ({ film }: FilmDescriptionProps) => {
               onClick={(evt) => handleNavClick(evt, item)}
               className={clsx('film-nav__item', { 'film-nav__item--active': activeNav === item })}
             >
-              <a href="#" className="film-nav__link">{item}</a>
+              <a href={AppRoute.Root} className="film-nav__link">{item}</a>
             </li>
           ))}
         </ul>

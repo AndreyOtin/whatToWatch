@@ -3,22 +3,24 @@ import { Link, useMatch } from 'react-router-dom';
 import { AppRoute } from '../../consts/enum';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { getCheckAuthQuery } from '../../store/selectors';
+import { selectCheckAuthQuery } from '../../store/selectors';
 import { useLogUserOutMutation } from '../../api/api';
 import { displayToast } from '../../utils/app';
 import { removeToken } from '../../api/token';
 
 type HeaderProps = {
   children?: JSX.Element;
-  className: string;
+  className?: string;
 }
 
 const Header = ({ children, className }: HeaderProps) => {
   const isLoginRoute = !!useMatch(AppRoute.Login);
-  const authQuery = useSelector(getCheckAuthQuery);
+  const authQuery = useSelector(selectCheckAuthQuery);
   const [logUserOut] = useLogUserOutMutation();
 
-  const handleLogoutClick = () => {
+  const handleLogoutClick = (evt: React.MouseEvent) => {
+    evt.preventDefault();
+
     logUserOut()
       .unwrap()
       .then(() => removeToken())
@@ -55,6 +57,7 @@ const Header = ({ children, className }: HeaderProps) => {
                 </li>
                 <li className="user-block__item">
                   <a
+                    href={AppRoute.Root}
                     onClick={handleLogoutClick}
                     className="user-block__link"
                   >

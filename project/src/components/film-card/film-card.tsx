@@ -1,9 +1,9 @@
 import React from 'react';
 import { Film } from '../../types/film';
 import { useSelector } from 'react-redux';
-import { getCheckAuthQuery } from '../../store/selectors';
+import { selectCheckAuthQuery } from '../../store/selectors';
 import MyListButton from '../my-list-button/my-list-button';
-import { generatePath, useNavigate } from 'react-router-dom';
+import { generatePath, Link, useNavigate } from 'react-router-dom';
 import { AppRoute } from '../../consts/enum';
 
 type FilmCardProps = {
@@ -13,7 +13,7 @@ type FilmCardProps = {
 
 const FilmCard = ({ film, full = false }: FilmCardProps) => {
   const { posterImage, name, genre, released } = film;
-  const authQuery = useSelector(getCheckAuthQuery);
+  const authQuery = useSelector(selectCheckAuthQuery);
   const navigate = useNavigate();
 
   return (
@@ -47,7 +47,13 @@ const FilmCard = ({ film, full = false }: FilmCardProps) => {
               <span>Play</span>
             </button>
             {authQuery.isError || <MyListButton id={film.id} isFavorite={film.isFavorite}/>}
-            {full && <a href="add-review.html" className="btn film-card__button">Add review</a>}
+            {full &&
+              <Link
+                to={`../${generatePath(AppRoute.Review, { id: film.id.toString() })}`}
+                className="btn film-card__button"
+              >
+                Add review
+              </Link>}
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { useChangeFavoriteMutation, useGetFavoritesQuery } from '../../api/api';
 import Spinner from '../spinner/spinner';
 import { toast } from 'react-toastify';

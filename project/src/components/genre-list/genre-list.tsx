@@ -1,5 +1,5 @@
-import React, { MouseEvent, useState } from 'react';
-import classNames from 'clsx';
+import React, { MouseEvent, useMemo } from 'react';
+import clsx from 'clsx';
 import { Film } from '../../types/film';
 import { DEFAULT_GENRE } from '../../consts/app';
 
@@ -10,7 +10,10 @@ type GenreListProps = {
 }
 
 const GenreList = ({ films, onGenreClick, activeGenre }: GenreListProps) => {
-  const genres = films.reduce((set, film) => set.add(film.genre), new Set<string>([DEFAULT_GENRE]));
+  const genres = useMemo(() =>
+    films.reduce((set, film) =>
+      set.add(film.genre), new Set<string>([DEFAULT_GENRE])),
+  [films]);
 
   const handleGenreClick = (evt: MouseEvent<HTMLLIElement>, genre: string) => {
     evt.preventDefault();
@@ -23,7 +26,7 @@ const GenreList = ({ films, onGenreClick, activeGenre }: GenreListProps) => {
         <li
           onClick={(evt) => handleGenreClick(evt, genre)}
           key={genre}
-          className={classNames(
+          className={clsx(
             'catalog__genres-item',
             { 'catalog__genres-item--active': genre === activeGenre }
           )}
