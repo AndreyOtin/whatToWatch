@@ -6,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import Header from '../../components/header/header';
 import FilmCardContainer from '../../components/film-card-container/film-card-container';
 import NotFoundScreen from '../not-found-screen/not-found-screen';
+import FilmsList from '../../components/films-list/films-list';
 
 const FilmScreen = () => {
   const params = useParams();
@@ -20,10 +21,10 @@ const FilmScreen = () => {
     return <NotFoundScreen/>;
   }
 
-  if (filmQuery.isLoading || !filmQuery.data) {
+  if (filmQuery.isLoading || !filmQuery.data || !similarFilmsQuery.data || similarFilmsQuery.isLoading) {
     return <Spinner isActive/>;
   }
-  console.log('7');
+
   return (
     <>
       <FilmCardContainer film={filmQuery.data} full>
@@ -33,7 +34,7 @@ const FilmScreen = () => {
       <div className="page-content">
         <section className="catalog catalog--like-this">
           <h2 className="catalog__title">More like this</h2>
-          {/*<FilmsList films={similarFilmsQuery.data}/>*/}
+          <FilmsList films={similarFilmsQuery.data}/>
         </section>
         <Footer/>
       </div>

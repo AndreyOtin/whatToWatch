@@ -16,7 +16,7 @@ const AddReviewScreen = () => {
   }
 
   const { backgroundImage, name, posterImage } = filmQuery.data;
-  console.log(7);
+
   return (
     <section className="film-card film-card--full">
       <div className="film-card__header">
