@@ -18,7 +18,7 @@ const root = ReactDOM.createRoot(
 store.dispatch(apiSlice.endpoints.checkAuth.initiate());
 
 root.render(
-  <HistoryRouter basename='/whatToWatch' history={browserHistory}>
+  <HistoryRouter history={browserHistory}>
     <Provider store={store}>
       <HelmetProvider>
         <ToastContainer
